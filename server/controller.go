@@ -24,7 +24,7 @@ func IndexPage(c *gin.Context) {
 }
 
 func GetIP() string {
-	file, err := os.Open(getCurrentDirectory() + "ip.lock")
+	file, err := os.OpenFile("./ip.lock", os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		log.Printf("打开ip.lock失败 %s", err)
 	}
@@ -39,7 +39,7 @@ func GetIP() string {
 }
 
 func SendIp(c *gin.Context) {
-	ip := c.PostForm("ip")
+	ip := c.ClientIP()
 	log.Printf("send ip: %s", ip)
 	clientKey := c.PostForm("clientKey")
 	if clientKey != "shdgi324#@$@%@#DASFDS" {
@@ -47,8 +47,7 @@ func SendIp(c *gin.Context) {
 		c.String(http.StatusNotAcceptable, "身份验证失败！")
 		return
 	}
-
-	file, err := os.Open(getCurrentDirectory() + "ip.lock")
+	file, err := os.OpenFile("./ip.lock", os.O_WRONLY, os.ModePerm)
 
 	if err != nil {
 		log.Printf("打开ip.lock失败 %s", err)
@@ -58,7 +57,7 @@ func SendIp(c *gin.Context) {
 
 	defer file.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := ioutil.ReadFile("./ip.lock")
 
 	if err != nil {
 		log.Printf("读取ip.lock失败 %s", err)

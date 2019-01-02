@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,12 +18,10 @@ var clientKey string
 
 func main() {
 	getConfig()
-	for t := range time.Tick(time.Second * 1) {
+	for t := range time.Tick(time.Second * 5) {
 		fmt.Printf("%s sendIp \n", t.Local())
-
-		resp, err := http.Post("http://"+server+":"+string(port)+"/sendIp",
-			"application/x-www-form-urlencoded",
-			strings.NewReader("clientKey="+clientKey))
+		resp, err := http.PostForm("http://"+server+":"+string(port)+"/sendIp",
+			url.Values{"clientKey": {clientKey}})
 		if err != nil {
 			log.Printf("sendIp Error: %s", err)
 			continue
