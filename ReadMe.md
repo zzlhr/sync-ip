@@ -13,6 +13,7 @@ linux/windows/osx
 服务端
 ```shell
 git clone https://github.com/zzlhr/sync-ip.git
+go get github.com/gin-gonic/gin #安装依赖
 cd sync-ip/server
 go build .
 ./server
